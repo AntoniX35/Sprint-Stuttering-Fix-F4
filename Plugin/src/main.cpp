@@ -6,17 +6,16 @@ void MessageHandler(F4SE::MessagingInterface::Message* a_message)
 	case F4SE::MessagingInterface::kPostLoad:
 		break;
 	case F4SE::MessagingInterface::kGameDataReady:
-		{	
+		{
 			float limit = 1100.0f;
 			auto& trampoline = F4SE::GetTrampoline();
 			if (!nextgen) {
 				REL::Relocation<std::uintptr_t> SprintLimit{ REL::ID(61995) };
-												
+
 				REL::safe_write(SprintLimit.address(), &limit, sizeof(float));
-			}
-			else {
+			} else {
 				REL::Relocation<std::uintptr_t> SprintLimit{ REL::ID(2664490) };
-												
+
 				REL::safe_write(SprintLimit.address(), &limit, sizeof(float));
 			}
 		}
@@ -41,14 +40,14 @@ DLLEXPORT bool F4SEAPI F4SEPlugin_Load(const F4SE::LoadInterface* a_F4SE)
 	MessageBoxA(NULL, "Loaded. You can now attach the debugger or continue execution.", Plugin::NAME.data(), NULL);
 #endif
 	auto ver = a_F4SE->RuntimeVersion();
-	
+
 	F4SE::Init(a_F4SE);
 	if (ver >= F4SE::RUNTIME_1_10_980) {
 		nextgen = true;
 	}
 	DKUtil::Logger::Init(Plugin::NAME, std::to_string(Plugin::Version));
 	INFO("{} v{} loaded."sv, Plugin::NAME, Plugin::Version);
-	
+
 	const auto messaging = F4SE::GetMessagingInterface();
 	messaging->RegisterListener(MessageHandler);
 
