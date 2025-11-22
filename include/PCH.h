@@ -38,7 +38,7 @@ namespace stl
 	{
 		F4SE::AllocTrampoline(14);
 
-	    auto& trampoline = F4SE::GetTrampoline();
+		auto& trampoline = F4SE::GetTrampoline();
 		T::func = trampoline.write_call<5>(a_src, T::thunk);
 	}
 
@@ -58,8 +58,8 @@ namespace stl
 
 namespace RE
 {
-    using FormID = std::uint32_t;
-    using RefHandle = std::uint32_t;
+	using FormID = std::uint32_t;
+	using RefHandle = std::uint32_t;
 	using FormType = ENUM_FORM_ID;
 }
 

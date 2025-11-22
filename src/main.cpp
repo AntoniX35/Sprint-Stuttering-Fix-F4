@@ -6,8 +6,8 @@ void MessageHandler(F4SE::MessagingInterface::Message* a_message)
 		break;
 	case F4SE::MessagingInterface::kGameDataReady:
 		{
-			float limit = 1100.0f;
-			REL::Relocation<std::uintptr_t> SprintLimit{ REL::ID(2664490) };										
+			float                           limit = 1100.0f;
+			REL::Relocation<std::uintptr_t> SprintLimit{ REL::ID(2664490) };
 			REL::safe_write(SprintLimit.address(), &limit, sizeof(float));
 		}
 		break;
