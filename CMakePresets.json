@@ -11,8 +11,7 @@
       "hidden": true,
       "cacheVariables": {
         "CMAKE_CONFIGURATION_TYPES": "Debug;Release",
-        "CMAKE_CXX_FLAGS": "/EHsc /MP /W4 /external:W0 $penv{CXXFLAGS}",
-        "CMAKE_CXX_FLAGS_RELEASE": "/O2 /DNDEBUG"
+        "CMAKE_CXX_FLAGS": "/EHsc /MP /W4 /external:anglebrackets /external:W0 $penv{CXXFLAGS}"
       },
       "errors": {
         "deprecated": true
@@ -45,25 +44,19 @@
       "toolset": "v143"
     },
     {
-      "name": "f4",
+      "name": "all",
       "hidden": true,
-      "binaryDir": "${sourceDir}/build"
+      "binaryDir": "${sourceDir}/buildall"
     },
     {
-      "name": "vs2022-windows-vcpkg-f4",
-      "inherits": [
-        "cmake-dev",
-        "vcpkg",
-        "windows",
-        "vs2022",
-        "f4"
-      ]
+      "name": "vs2022-windows-vcpkg-all",
+      "inherits": ["cmake-dev", "vcpkg", "windows", "vs2022", "all"]
     }
   ],
   "buildPresets": [
     {
-      "name": "vs2022-windows-vcpkg-f4",
-      "configurePreset": "vs2022-windows-vcpkg-f4",
+      "name": "vs2022-windows-vcpkg-all",
+      "configurePreset": "vs2022-windows-vcpkg-all",
       "configuration": "Release"
     }
   ]

@@ -1,4 +1,3 @@
-set(SOURCES
-	include/PCH.h
+set(sources ${sources}
 	src/main.cpp
 )

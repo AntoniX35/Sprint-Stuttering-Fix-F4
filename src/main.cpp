@@ -1,20 +1,47 @@
+#include "PCH.h"
 
 void MessageHandler(F4SE::MessagingInterface::Message* a_message)
 {
 	switch (a_message->type) {
-	case F4SE::MessagingInterface::kPostLoad:
-		break;
 	case F4SE::MessagingInterface::kGameDataReady:
 		{
-			float                           limit = 1100.0f;
-			REL::Relocation<std::uintptr_t> SprintLimit{ REL::ID(2664490) };
+			float limit = 1100.0f;
+			REL::RelocationID SprintLimit(61995, 2664490, 2664490);
 			REL::safe_write(SprintLimit.address(), &limit, sizeof(float));
+			logger::info("Fix applied");
 		}
 		break;
 	default:
 		break;
 	}
 }
+
+extern "C" DLLEXPORT constinit auto F4SEPlugin_Version = []() noexcept {
+	F4SE::PluginVersionData data{};
+
+	data.PluginVersion({ Version::MAJOR, Version::MINOR, Version::PATCH });
+	data.PluginName(Version::PROJECT.data());
+	data.AuthorName("AntoniX35");
+	data.UsesAddressLibrary(true);
+	data.UsesSigScanning(false);
+	data.IsLayoutDependent(true);
+	data.HasNoStructUse(false);
+	data.CompatibleVersions({ 
+		F4SE::RUNTIME_1_10_130,
+		F4SE::RUNTIME_1_10_138,
+		F4SE::RUNTIME_1_10_162,
+		F4SE::RUNTIME_1_10_163,
+		F4SE::RUNTIME_1_10_980,
+		F4SE::RUNTIME_1_10_984,
+		F4SE::RUNTIME_1_11_137,
+		F4SE::RUNTIME_1_11_159,
+		F4SE::RUNTIME_1_11_169,
+		F4SE::RUNTIME_1_11_191,
+		F4SE::RUNTIME_1_11_221,
+		F4SE::RUNTIME_LATEST });
+
+	return data;
+}();
 
 void InitializeLog()
 {
@@ -33,34 +60,32 @@ void InitializeLog()
 	log->flush_on(spdlog::level::info);
 
 	spdlog::set_default_logger(std::move(log));
-	spdlog::set_pattern("[%H:%M:%S:%e] %v"s);
+	spdlog::set_pattern("[%H:%M:%S:%e][%l] %v"s);
 
 	logger::info(FMT_STRING("{} v{}"), Version::PROJECT, Version::NAME);
 }
 
-extern "C" DLLEXPORT constinit auto F4SEPlugin_Version = []() noexcept {
-	F4SE::PluginVersionData data{};
+extern "C" DLLEXPORT bool F4SEAPI F4SEPlugin_Query(const F4SE::QueryInterface*, F4SE::PluginInfo* a_info)
+{
+	a_info->infoVersion = F4SE::PluginInfo::kVersion;
+	a_info->name = Version::PROJECT.data();
+	a_info->version = Version::MAJOR;
 
-	data.PluginVersion({ Version::MAJOR, Version::MINOR, Version::PATCH });
-	data.PluginName(Version::PROJECT.data());
-	data.AuthorName("AntoniX35");
-	data.UsesAddressLibrary(true);
-	data.UsesSigScanning(false);
-	data.IsLayoutDependent(true);
-	data.HasNoStructUse(false);
-	data.CompatibleVersions({ F4SE::RUNTIME_LATEST });
-
-	return data;
-}();
+	return true;
+}
 
 extern "C" DLLEXPORT bool F4SEAPI F4SEPlugin_Load(const F4SE::LoadInterface* a_f4se)
 {
-	F4SE::Init(a_f4se, false);
+	F4SE::Init(a_f4se);
 
 	InitializeLog();
 
+	const auto ver = a_f4se->RuntimeVersion();
+
+	logger::info("Game version : {}", ver.string());
+
 	const auto messaging = F4SE::GetMessagingInterface();
 	messaging->RegisterListener(MessageHandler);
-
+	
 	return true;
 }
